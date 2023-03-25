@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import * as React from "react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { ChatBubble } from "@/components/common";
 
-function App() {
-  const [messages, setMessages] = useState<string[]>([]);
+export const ChatContainer = () => {
+  const [messages, setMessages] = React.useState<string[]>([]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -11,7 +12,7 @@ function App() {
     setMessages((prev) => [...prev, data.message as string]);
   };
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
   return (
     <div className="relative">
       <aside className="fixed left-0 top-0 bottom-0 flex overflow-hidden">
@@ -37,9 +38,7 @@ function App() {
           <ul className="p-4 space-y-4">
             {messages?.map((message) => (
               <li key={message} className="flex">
-                <div className="p-2 bg-gray-400 rounded-md w-fit max-w-sm">
-                  {message}
-                </div>
+                <ChatBubble message={message} />
               </li>
             ))}
           </ul>
@@ -66,6 +65,4 @@ function App() {
       </div>
     </div>
   );
-}
-
-export default App;
+};
