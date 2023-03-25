@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  html {
+    @apply min-h-full overflow-hidden;
+  }
+  body {
+    @apply min-h-full overflow-auto bg-gray-700;
+  }
+}
