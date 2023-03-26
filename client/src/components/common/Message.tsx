@@ -2,7 +2,7 @@ import { Message as MessageType, db } from "@/db";
 import { useLiveQuery } from "dexie-react-hooks";
 
 export const Message = ({ message }: { message: MessageType }) => {
-  const user = useLiveQuery(() => db.user.get(message.userId));
+  const user = useLiveQuery(() => db.users.get(message.userId));
 
   const { text } = message;
 
