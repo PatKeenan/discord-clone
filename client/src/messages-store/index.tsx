@@ -1,4 +1,3 @@
-import { seedLocalDB } from "@/utils/generateData";
 import * as React from "react";
 
 type MessageStoreContext = {
@@ -16,13 +15,6 @@ export const MessageStoreProvider = ({ children }: MessageStoreProvider) => {
   const [selectedChannelId, setSelectedChannelID] = React.useState<
     string | undefined
   >();
-
-  /*   const value = {
-    selectedChannel,
-    setSelectedChannel,
-  }; */
-
-  seedLocalDB();
 
   return (
     <MessageStoreContext.Provider value={{ selectedChannel: "" }}>

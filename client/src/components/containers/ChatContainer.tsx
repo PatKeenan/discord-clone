@@ -3,18 +3,19 @@ import * as React from "react";
 import clsx from "clsx";
 
 import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { FooterInput, MessageList } from "@/components/sections";
+import { db } from "@/db";
 import {
   ArrowLeftCircleIcon,
   BellIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
 
-import { FooterInput, MessageList } from "../sections";
-import { MessageTypeList } from "@/types";
-import { seedLocalDB } from "@/utils/generateData";
+import type { Message } from "@/db";
+import { useLiveQuery } from "dexie-react-hooks";
 
 export const ChatContainer = () => {
-  const [messages, setMessages] = React.useState<MessageTypeList>([]);
+  const [messages, setMessages] = React.useState<Message[] | []>([]);
   const [scrolled, setScrolled] = React.useState(false);
   const [newMessages, setNewMessages] = React.useState<number | undefined>();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -23,13 +24,6 @@ export const ChatContainer = () => {
     e.preventDefault();
     const formValues = new FormData(e.currentTarget);
     const data = Object.fromEntries(formValues.entries());
-
-    const newMessage = {
-      id: messages.length + 1,
-      name: "Me",
-      message: data.message as string,
-      image: "https://source.unsplash.com/random/person",
-    };
 
     /*   setMessages((prev) => [...prev, newMessage]); */
   };

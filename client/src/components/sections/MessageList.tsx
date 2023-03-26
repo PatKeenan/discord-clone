@@ -1,11 +1,10 @@
 import React from "react";
 
 import { Message } from "@/components/common";
-
-import type { MessageTypeList } from "@/types";
+import type { Message as MessageType } from "@/db";
 
 type MessageListProps = {
-  messages: MessageTypeList | [];
+  messages: MessageType[] | [];
   onScroll: (e: React.UIEvent<HTMLUListElement, UIEvent>) => void;
 };
 

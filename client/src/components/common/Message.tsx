@@ -1,8 +1,12 @@
-import type { MessageType } from "@/types";
-export const Message = ({ message }: { message: MessageType }) => {
-  const { text, user } = message;
+import { Message as MessageType, db } from "@/db";
+import { useLiveQuery } from "dexie-react-hooks";
 
-  return (
+export const Message = ({ message }: { message: MessageType }) => {
+  const user = useLiveQuery(() => db.user.get(message.userId));
+
+  const { text } = message;
+
+  return user ? (
     <div className="flex items-start space-x-4 pt-4 w-full">
       <img
         src={user.avatarUrl}
@@ -21,5 +25,5 @@ export const Message = ({ message }: { message: MessageType }) => {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
