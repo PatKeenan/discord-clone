@@ -1,20 +1,30 @@
+import { Message, db } from "@/db";
+import { useGlobalStore } from "@/store";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { v4 as uuid } from "uuid";
 import React from "react";
 
-type FooterInputProps = {
-  onSubmit: (messageText: string) => void;
-};
+export const FooterInput = () => {
+  const [input, setInput] = React.useState<string>("");
 
-export const FooterInput = ({ onSubmit }: FooterInputProps) => {
-  const [input, setInput] = React.useState<string>();
+  const activeTopic = useGlobalStore((state) => state.activeTopic);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formValues = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formValues.entries());
-    onSubmit(data.message as string);
-    setInput("");
+    if (input && activeTopic?.id) {
+      const newMessage: Message = {
+        id: uuid(),
+        text: input,
+        topicId: activeTopic.id,
+        userId: "2",
+        createdAt: new Date().toISOString(),
+      };
+      db.messages.add(newMessage);
+      setInput("");
+    }
+    return;
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };

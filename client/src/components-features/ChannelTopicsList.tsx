@@ -1,3 +1,5 @@
+import { Topic, db } from "@/db";
+import { useGlobalStore } from "@/store";
 import {
   ArrowLeftCircleIcon,
   BellIcon,
@@ -7,22 +9,45 @@ import {
 } from "@heroicons/react/24/outline";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import clsx from "clsx";
+import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 
-export const SubChannelList = () => {
+export const ChannelTopicsList = () => {
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const { activeChannel, setActiveTopic, activeTopic } = useGlobalStore(
+    (state) => ({
+      activeChannel: state.activeChannel,
+      setActiveTopic: state.setActiveTopic,
+      activeTopic: state.activeTopic,
+    })
+  );
+
+  const topics = useLiveQuery(
+    () =>
+      db.topics
+        .where("channelId")
+        .equals(activeChannel?.id || "")
+        .toArray(),
+    [activeChannel?.id]
+  );
+
+  const handleClickTopic = (topic: Topic) => {
+    setActiveTopic(topic);
+  };
+
   return (
-    <div className="h-full w-60 bg-gray-800 overflow-auto">
+    <div className="flex flex-col flex-grow w-60 bg-gray-800 overflow-hidden">
       <div
         className={clsx(
           isOpen && "bg-gray-600/40",
           "active:bg-gray-600/40 border-opacity-30 cursor-pointer shadow border-b border-b-gray-900  h-[48px] hover:bg-gray-600/40"
         )}
       >
-        <DropdownMenu.Root onOpenChange={(val) => setIsOpen(val)}>
+        <DropdownMenu.Root onOpenChange={(val) => setIsOpen(val)} modal={false}>
           <DropdownMenu.Trigger asChild>
             <button className="py-3 px-4 flex w-full justify-between text-gray-100 font-semibold items-center outline-none">
-              MakersHQ
+              {activeChannel?.name}
               {isOpen ? (
                 <XMarkIcon className="h-4 w-4" />
               ) : (
@@ -59,6 +84,23 @@ export const SubChannelList = () => {
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
       </div>
+      <ul className="overflow-auto flex-grow  flex flex-col space-y-4 p-4">
+        {topics?.map((topic) => (
+          <li key={topic.id}>
+            <button
+              onClick={() => handleClickTopic(topic)}
+              className={clsx(
+                topic.id === activeTopic?.id
+                  ? "bg-indigo-600 text-white"
+                  : "text-gray-400",
+                "hover:text-white cursor-pointer hover:bg-indigo-600 py-1 px-2 rounded-md w-full text-left"
+              )}
+            >
+              # {topic.name}{" "}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
