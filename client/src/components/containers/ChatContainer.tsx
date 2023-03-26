@@ -2,42 +2,19 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as React from "react";
 import clsx from "clsx";
 
-import {
-  ChevronDownIcon,
-  PaperAirplaneIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   ArrowLeftCircleIcon,
   BellIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
 
-import { Message } from "@/components/common";
-
-import type { MessageProps } from "@/components/common";
-
-const randomMessages: MessageProps[] = [
-  {
-    id: 1,
-    name: "Tina Turner",
-    message: "What a wonderful world",
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2370&q=80",
-  },
-  {
-    id: 2,
-    name: "Bob Dillon",
-    message: "Yes it is!!",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
-  },
-];
+import { FooterInput, MessageList } from "../sections";
+import { MessageTypeList } from "@/types";
+import { seedLocalDB } from "@/utils/generateData";
 
 export const ChatContainer = () => {
-  const [messages, setMessages] = React.useState<MessageProps[]>(
-    () => randomMessages
-  );
+  const [messages, setMessages] = React.useState<MessageTypeList>([]);
   const [scrolled, setScrolled] = React.useState(false);
   const [newMessages, setNewMessages] = React.useState<number | undefined>();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -54,7 +31,7 @@ export const ChatContainer = () => {
       image: "https://source.unsplash.com/random/person",
     };
 
-    setMessages((prev) => [...prev, newMessage]);
+    /*   setMessages((prev) => [...prev, newMessage]); */
   };
 
   React.useLayoutEffect(() => {
@@ -82,8 +59,18 @@ export const ChatContainer = () => {
       setScrolled(true);
     }
   };
+  const handleOnSubmit = (messageContent: string) => {
+    const newMessage = {
+      id: messages.length + 1,
+      name: "Me",
+      message: messageContent,
+      image: "https://source.unsplash.com/random/person",
+    };
+    /*    setMessages((prev) => [...prev, newMessage]); */
+  };
 
   const inputRef = React.useRef<HTMLInputElement>(null);
+
   return (
     <div className="relative">
       <aside className="fixed left-0 top-0 bottom-0 flex overflow-hidden">
@@ -161,39 +148,9 @@ export const ChatContainer = () => {
               messages
             </button>
           )}
-          <ul
-            className={
-              "px-4 pb-4 pt-2 space-y-4 w-full divide-y divide-gray-100/10 overflow-auto"
-            }
-            onScroll={handleScroll}
-            ref={messagesRef}
-          >
-            {messages.concat(messages)?.map(({ message, image, id, name }) => (
-              <li key={id} className="flex w-full">
-                <Message message={message} image={image} name={name} id={id} />
-              </li>
-            ))}
-          </ul>
+          <MessageList messages={messages} onScroll={handleScroll} />
         </main>
-        <footer className="h-[68px] w-full px-4 flex-shrink-0">
-          <form
-            className="bg-gray-600 py-2 pl-2 pr-4 rounded-md flex items-center flex-1 relative"
-            onSubmit={handleSubmit}
-          >
-            <input
-              ref={inputRef}
-              name="message"
-              autoComplete="off"
-              aria-multiline="true"
-              aria-label="Message #general"
-              placeholder="Message #general"
-              className="w-full peer flex  bg-transparent flex-auto py-1 outline-none focus:caret-gray-300 text-gray-300 z-10"
-            />
-            <button type="submit">
-              <PaperAirplaneIcon className="h-6 w-6 text-gray-400" />
-            </button>
-          </form>
-        </footer>
+        <FooterInput onSubmit={handleOnSubmit} />
       </div>
     </div>
   );
