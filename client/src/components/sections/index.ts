@@ -1,2 +1,6 @@
 export * from './MessageList'
 export * from './FooterInput'
+export * from './ChannelList'
+export * from './ChannelHeader'
+export * from './SubChannelList'
+export * from './ChannelContent'
